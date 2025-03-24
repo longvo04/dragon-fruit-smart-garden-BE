@@ -17,7 +17,7 @@ const DB_NAME = process.env.DB_NAME;
 
 const URI = `mongodb+srv://${USERNAME}:${encodedPassword}@cluster0.ei9n7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
 
-mongoose.connect(URI)
+mongoose.connect(process.env.MONGO_URL)
   .then((result) => console.log("connected to db"))
   .catch((err) => console.log(err))
 
@@ -36,13 +36,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
 
+const route = require('./routes/index.route');
+route(app)
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
